@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Appointments</title>
+  {% load staticfiles %}
+  <!-- The line above tells Django to be ready to listen for static files -->
+  <link rel="stylesheet" href="{% static 'css/index.css' %}"media="screen" title="no title"  charset="utf-8">
+</head>
+<body>
+  <center>
+  <h1>Hello, {{ request.session.name }}!</h1>
+  <h3>Your id is {{ request.session.id }}
+  <form action="/logout" method="post">
+    {% csrf_token %}
+    <input type="submit" name="logout" value="Logout">
+  </form>
+  </h3>
+
+  <div class="messages">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+
+
+  <h2>Here are your appointments for today, {{ now }}</h2>
+  <table>
+    <tr>
+      <th>Task</th>
+      <th>Time</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+    {% for date in current %}
+        <tr>
+          <td>{{ date.task }}</td>
+          <td>{{ date.time }}</td>
+
+          <td>{{ date.status }}</td>
+      {% if date.status != 'Done' %}
+          <td>
+            <a href="/task/edit/{{ date.id }}">Edit</a>
+            <form action="delete/{{ date.id }}" class="register" method="post">
+              {% csrf_token %}
+              <input type="submit" name="delete" value="Delete">
+            </form>
+          </td>
+      {% else %}
+          <td></td>
+      {% endif %}
+        </tr>
+    {% endfor %}
+  </table>
+
+
+  <h2>Your other appointments</h2>
+  <table>
+    <tr>
+      <th>Task</th>
+      <th>Date</th>
+      <th>Time</th>
+    </tr>
+    {% for date in future %}
+        <tr>
+          <td>{{ date.task }}</td>
+          <td>{{ date.date }}</td>
+          <td>{{ date.time }}</td>
+        </tr>
+    {% endfor %}
+  </table>
+
+  <br>
+  <br>
+  <br>
+  <form action="/task/add" class="register" method="post">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Add Appointment</legend>
+      <ul>
+        <li>Date: <input type="date" name="date" min="2017-06-01"></li>
+        <li>Time: <input type="time" name="time"></li>
+        <li>Task: <input type="text" name="task"></li>
+        <li><input type="submit" name="add" value="Add"></li>
+      </ul>
+    </fieldset>
+  </form>
+
+  
+  </center>
+</body>
+</html>

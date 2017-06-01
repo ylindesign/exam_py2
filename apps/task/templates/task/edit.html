@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit</title>
+  {% load staticfiles %}
+  <!-- The line above tells Django to be ready to listen for static files -->
+  <link rel="stylesheet" href="{% static 'css/index.css' %}"media="screen" title="no title"  charset="utf-8">
+</head>
+<body>
+  <center>
+  <h1>Editing: {{ info.task }} for {{ request.session.name }}!</h1>
+  <a href="/task">Home</a>
+  <br>
+  <form action="/logout" method="post">
+    {% csrf_token %}
+    <input type="submit" name="logout" value="Logout">
+  </form>
+  </h3>
+
+  <div class="messages">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+  info id: {{ info.id }}
+  <form action="/task/update/{{ info.id }}" class="register" method="post">
+    {% csrf_token %}
+      <ul>
+        <li>Task: <input type="text" name="task" value="{{ info.task }}"></li>
+        <li>Status: 
+        <select name="status">
+          <option value="pending">Pending</option>
+          <option value="missed">Missed</option>
+          <option value="done">Done</option>
+        </select>
+        <li>Date: <input type="text" onfocus="(this.type='date')" name="date" min="2017-06-01" placeholder="{{ info.date }}"></li>
+        <li>Time: <input type="text" onfocus="(this.type='time')" name="time" placeholder=" {{ info.time }}"></li>
+        <li><input type="submit" name="add_task" value="Update"></li>
+      </ul>
+  </form>
+
+  
+  </center>
+</body>
+</html>
